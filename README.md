@@ -2,7 +2,7 @@
 
 This repository contains an AI-powered customer support automation project built with n8n, Telegram, OpenAI, and Google Sheets.
 
-The main project files are inside the `n8n-ai-customer-support-agent` folder.
+The project files are organized in this repository with exported n8n workflows, documentation, and screenshots.
 
 ## Features
 
