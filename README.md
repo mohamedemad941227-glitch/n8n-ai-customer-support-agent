@@ -23,3 +23,7 @@ The project files are organized in this repository with exported n8n workflows, 
 
 No API keys, bot tokens, or credentials are included in this repository.
 All credentials are configured securely inside n8n.
+
+Here is a photo for workflow:
+<img width="1280" height="670" alt="Workflow png" src="https://github.com/user-attachments/assets/fc71d3fa-53ed-41a2-8bae-7da37e94d33e" />
+
