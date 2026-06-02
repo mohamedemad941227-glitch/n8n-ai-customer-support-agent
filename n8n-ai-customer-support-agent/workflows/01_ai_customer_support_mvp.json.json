@@ -1,0 +1,370 @@
+{
+  "name": "My workflow 4",
+  "nodes": [
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        -592,
+        32
+      ],
+      "id": "67af122d-7071-4210-bede-cd709199e18f",
+      "name": "Telegram Trigger",
+      "webhookId": "335238de-1cb4-4252-bb29-fc62e09960ef",
+      "credentials": {
+        "telegramApi": {
+          "id": "n97tsK6WkU3QjJTx",
+          "name": "Telegram account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "GPT-4O-MINI"
+        },
+        "responses": {
+          "values": [
+            {
+              "content": "=You are a helpful customer support assistant for an online store.\n\nYour job:\n1. Understand the customer's message, even if it has spelling mistakes.\n2. If the customer misunderstands something, politely correct their understanding.\n3. If the question is close to one of the FAQ topics, answer based on the FAQ.\n4. If the message is unclear, ask one short clarification question.\n5. Escalate to a human only if:\n   - the customer is very angry\n   - the customer asks for a human agent\n   - the issue requires checking a real order, payment, account, or private customer data\n   - the question is completely unrelated to the FAQ and cannot be clarified\n\nFAQ:\n1. Refund policy:\nCustomers can request a refund within 14 days after purchase.\n\n2. Delivery:\nDelivery usually takes 3 to 5 business days.\n\n3. Payment:\nWe accept PayPal, credit cards, and bank transfer.\n\n4. Support hours:\nSupport is available Monday to Friday from 9 AM to 6 PM.\n\nCustomer message:\n{{ $('Telegram Trigger').item.json.message.text }}\n\nRules:\n- Reply only in english.\n- Keep the answer short and helpful.\n- Do not say ESCALATE_TO_HUMAN unless escalation is truly needed.\n- If escalation is needed, reply exactly with:\nESCALATE_TO_HUMAN"
+            }
+          ]
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 2.3,
+      "position": [
+        -352,
+        32
+      ],
+      "id": "af13b183-ff9c-4453-92c8-c4eb86fde0d4",
+      "name": "Message a model",
+      "credentials": {
+        "openAiApi": {
+          "id": "rpaEqLreDN74rgKv",
+          "name": "OpenAI account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "text": "={{ $('Message a model').item.json.output[0].content[0].text }}",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        272,
+        -160
+      ],
+      "id": "bcd0eb88-8f52-4f3c-9074-76d860670b15",
+      "name": "Send a text message",
+      "webhookId": "61d9a59c-9ed1-4118-808e-dd8184d4f092",
+      "credentials": {
+        "telegramApi": {
+          "id": "n97tsK6WkU3QjJTx",
+          "name": "Telegram account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "https://docs.google.com/spreadsheets/d/1FHR9T5ofmnLjXY5rOGmoe4qevaNFppQx7tqF8MbIhQY/edit?gid=0#gid=0",
+          "mode": "url"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Sheet 1",
+          "mode": "name"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "timestamp": "={{ $now }}",
+            "customer_name": "={{ $('Telegram Trigger').item.json.message.from.first_name }}",
+            "chat_id": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+            "customer_message": "={{ $('Telegram Trigger').item.json.message.text }}",
+            "ai_reply": "={{ $('Message a model').item.json.output[0].content[0].text }}",
+            "status": "auto_replied"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "timestamp",
+              "displayName": "timestamp",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "customer_name",
+              "displayName": "customer_name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "chat_id",
+              "displayName": "chat_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "customer_message",
+              "displayName": "customer_message",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "ai_reply",
+              "displayName": "ai_reply",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "output",
+              "displayName": "output",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        704,
+        32
+      ],
+      "id": "ed7ae061-b931-4c44-a4cb-f7e34b53ecb1",
+      "name": "Append row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "xSovNXVBaEaPxgGC",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "33714ba9-cc63-4b08-a85b-dd104ec92204",
+              "leftValue": "={{ $('Message a model').item.json.output[0].content[0].text }}",
+              "rightValue": "ESCALATE_TO_HUMAN",
+              "operator": {
+                "type": "string",
+                "operation": "notEquals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        0,
+        32
+      ],
+      "id": "775efb83-7dfc-489d-9566-a542b57dbe3c",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "text": "Thanks for your message. I’ll forward your request to a human support agent, and they’ll contact you soon.",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        208,
+        128
+      ],
+      "id": "cf1a617d-b243-4677-adda-42d1d4271d2d",
+      "name": "Send a text message1",
+      "webhookId": "842015e3-c121-4c86-b63b-99976ce43dad",
+      "credentials": {
+        "telegramApi": {
+          "id": "n97tsK6WkU3QjJTx",
+          "name": "Telegram account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "6329691293",
+        "text": "=🚨 New human support request  Customer name: {{ $('Telegram Trigger').item.json.message.from.first_name }}   Customer message: {{ $('Telegram Trigger').item.json.message.text }}",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        416,
+        128
+      ],
+      "id": "8a8bc353-e354-476f-8fae-c4d7a7d83891",
+      "name": "Send a text message2",
+      "webhookId": "5b0bdfe4-ddd9-4184-9a76-cd65551b517d",
+      "credentials": {
+        "telegramApi": {
+          "id": "n97tsK6WkU3QjJTx",
+          "name": "Telegram account 2"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "Message a model",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Message a model": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a text message": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send a text message1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a text message1": {
+      "main": [
+        [
+          {
+            "node": "Send a text message2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a text message2": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "4430cfe1-eae0-45ce-bea4-60a929797a0a",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "7ec7ef01c4cf0f0f03e7d557ff85839cece5fcaa498b18995a1d6c9f555c9ec0"
+  },
+  "id": "MJp7O0c8IAYmv7wr",
+  "tags": []
+}
