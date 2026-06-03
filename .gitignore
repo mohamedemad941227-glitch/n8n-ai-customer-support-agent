@@ -1,5 +1,6 @@
 .env
 .env.*
+!.env.example
 credentials.json
 *.secret
 node_modules/
